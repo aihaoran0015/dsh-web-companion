@@ -1,0 +1,14 @@
+- insert:
+    - id: web-companion
+      # Must equal the package name: the loader imports this specifier.
+      name: "@local/dsh-web-companion"
+      config:
+        # Local CDP port for the persistent browser (bound to 127.0.0.1 only).
+        port: 9334
+        # Leave empty to auto-detect Edge, then Chrome.
+        browserPath: ""
+        # Cookies/localStorage live here, so one login survives restarts.
+        profileDir: ""
+        # 原方案：自动化浏览器窗口可见（首次登录直接在里面完成）。
+        # 若不想看到窗口，把这里改成 true：窗口会移到屏幕外并最小化，识图仍然可用。
+        hidden: false

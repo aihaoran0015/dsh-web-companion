@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "网页助手（DeepSeek / 豆包）",
+    "description": "在右侧栏内使用网页版 DeepSeek 提问，并通过持久化浏览器读取网页版豆包的识图结果。"
+  }
+}
