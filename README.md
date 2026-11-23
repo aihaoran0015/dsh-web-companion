@@ -14,12 +14,12 @@ sign-in survives Harness restarts.
 
 > 中文说明见 [README.zh.md](README.zh.md).
 
-![Sidebar entries](docs/toolbar-logos.png)
+![Top-bar entries](docs/topbar.png)
 
 ## Features
 
-- **One-click web apps** — two entries at the bottom of the left sidebar (root-scoped, so they
-  exist even on the new-conversation screen): `DeepSeek` opens `chat.deepseek.com`, `Doubao` opens
+- **One-click web apps** — two entries in the window's top bar, before the session title (root-scoped,
+  so they exist even on the new-conversation screen): `DeepSeek` opens `chat.deepseek.com`, `Doubao` opens
   `www.doubao.com/chat/`. No new window per call: one browser, reused.
 - **Vision through the Doubao web app** — `doubao_vision` pastes an image into the Doubao composer,
   sends it, and returns the reply text to the harness as a tool result.
@@ -58,9 +58,9 @@ symlink are keyed by it. The repository itself is distributed under the name `ds
 
 ## Usage
 
-### Sidebar entries
+### Top-bar entries
 
-1. Bottom of the left sidebar: `DeepSeek` and `Doubao`. Each opens its page in the persistent browser.
+1. Top bar of the window, left of the session title: `DeepSeek` and `Doubao`. Each opens its page in the persistent browser.
 2. The right sidebar's **Start** tab also carries a *Web companion* card that opens the panel.
 3. The panel's own buttons open the same browser; only if the host route is unavailable do they
    fall back to a Harness Browser tab (that partition is ephemeral — you would sign in again).
@@ -123,7 +123,7 @@ model ──doubao_vision──▶ paste image + prompt ▶ read reply bubble
 
 ## Verification
 
-1. **Entries** — both icons appear at the bottom of the left sidebar, including on the new-conversation
+1. **Entries** — both buttons appear in the window's top bar, including on the new-conversation
    screen. Clicking one opens the matching page in the persistent browser.
 2. **Recognition** — attach an image and ask the model to read it with Doubao; the text comes back as a
    tool result.
@@ -146,7 +146,7 @@ model ──doubao_vision──▶ paste image + prompt ▶ read reply bubble
 | Path | Purpose |
 | --- | --- |
 | `index.js` | Host half: browser lifecycle, CDP client, tools, loopback route |
-| `client.js` | Client half: sidebar entries, right-sidebar panel, inlined logos |
+| `client.js` | Client half: top-bar entries, right-sidebar panel, inlined logos |
 | `cordis.patch.yml` | Loader row and default config |
 | `tools/fetch-logos.mjs` | Re-download the vendor favicon assets |
 | `tools/embed-logos.mjs` | Inline those assets into `client.js` as data URIs |

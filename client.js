@@ -185,12 +185,8 @@ window.__ModuleLoader__.load({
       return body.url
     }
 
-    /** One-click entry in the sidebar toolbar for one web app; both share the same browser. */
-    function CompanionFooterButton (props) {
-      const t = props.t
-      const ctx = props.ctx
-      const wide = props.wide !== false
-      const target = props.target === 'doubao' ? 'doubao' : 'deepseek'
+    /** One click on a web app; both entries share the same persistent browser. */
+    function TopAction ({ t, ctx, target }) {
       const meta = target === 'doubao'
         ? { label: t('entry.doubao'), title: t('entry.titleDoubao'), url: DOUBAO_URL }
         : { label: t('entry.deepseek'), title: t('entry.titleDeepseek'), url: DEEPSEEK_URL }
@@ -205,25 +201,34 @@ window.__ModuleLoader__.load({
       return h('button', {
         type: 'button',
         title: meta.title,
+        'aria-label': meta.label,
         onClick: run,
         style: {
           display: 'inline-flex',
           alignItems: 'center',
-          justifyContent: 'center',
-          gap: 6,
-          height: 28,
-          minWidth: wide ? undefined : 28,
-          padding: wide ? '0 9px' : 0,
-          borderRadius: 8,
-          border: '1px solid rgba(127,127,127,0.3)',
+          gap: 5,
+          height: 24,
+          padding: '0 8px',
+          borderRadius: 6,
+          border: '1px solid rgba(127,127,127,0.28)',
           background: 'transparent',
           color: 'inherit',
           font: 'inherit',
           fontSize: 12,
           lineHeight: 1,
           cursor: 'pointer',
+          whiteSpace: 'nowrap',
         },
-      }, h(BrandLogo, { target, size: 16 }), wide ? meta.label : null)
+      }, h(BrandLogo, { target, size: 14 }), meta.label)
+    }
+
+    /** The whole top-bar group: DeepSeek and Doubao side by side. */
+    function TopActions (props) {
+      return h('div', {
+        style: { display: 'inline-flex', alignItems: 'center', gap: 6, paddingRight: 6 },
+      },
+      h(TopAction, { t: props.t, ctx: props.ctx, target: 'deepseek' }),
+      h(TopAction, { t: props.t, ctx: props.ctx, target: 'doubao' }))
     }
 
     return {
@@ -248,23 +253,13 @@ window.__ModuleLoader__.load({
           locale: namespace,
         }, (props) => h(Panel, { ...props, t, ctx }))), 'web-companion: tab body')
 
-        // Root-scoped seat, so the entry also exists on the new-conversation screen, where no
-        // Session (and therefore no right sidebar) is mounted yet.
-        ctx.effect(() => ctx.slots.inject('sidebar.footer.action', () => ctx.slots.register({
-          name: 'sidebar.footer.action',
-          id: 'web-companion-deepseek',
-          order: 10,
+        // Top-bar group. `conversation.header.leading` is the frame's global navigation seat:
+        // root-scoped, so it exists on the new-conversation screen too, and it sits at the very
+        // top of the window next to the session title.
+        ctx.effect(() => ctx.slots.inject('conversation.header.leading', () => ctx.slots.register({
+          name: 'conversation.header.leading',
           locale: namespace,
-          label: () => t('entry.deepseek'),
-        }, (props) => h(CompanionFooterButton, { ...props, t, ctx, target: 'deepseek' }))), 'web-companion: deepseek entry')
-
-        ctx.effect(() => ctx.slots.inject('sidebar.footer.action', () => ctx.slots.register({
-          name: 'sidebar.footer.action',
-          id: 'web-companion-doubao',
-          order: 11,
-          locale: namespace,
-          label: () => t('entry.doubao'),
-        }, (props) => h(CompanionFooterButton, { ...props, t, ctx, target: 'doubao' }))), 'web-companion: doubao entry')
+        }, (props) => h(TopActions, { ...props, t, ctx }))), 'web-companion: top actions')
       },
     }
   },
