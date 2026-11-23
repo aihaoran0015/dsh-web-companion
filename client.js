@@ -185,8 +185,8 @@ window.__ModuleLoader__.load({
       return body.url
     }
 
-    /** One click on a web app; both entries share the same persistent browser. */
-    function TopAction ({ t, ctx, target }) {
+    /** Icon-only entry for the composer tool row; both entries share the persistent browser. */
+    function ComposerAction ({ t, ctx, target }) {
       const meta = target === 'doubao'
         ? { label: t('entry.doubao'), title: t('entry.titleDoubao'), url: DOUBAO_URL }
         : { label: t('entry.deepseek'), title: t('entry.titleDeepseek'), url: DEEPSEEK_URL }
@@ -206,29 +206,17 @@ window.__ModuleLoader__.load({
         style: {
           display: 'inline-flex',
           alignItems: 'center',
-          gap: 5,
-          height: 24,
-          padding: '0 8px',
+          justifyContent: 'center',
+          width: 26,
+          height: 26,
+          padding: 0,
           borderRadius: 6,
-          border: '1px solid rgba(127,127,127,0.28)',
+          border: '1px solid rgba(127,127,127,0.24)',
           background: 'transparent',
           color: 'inherit',
-          font: 'inherit',
-          fontSize: 12,
-          lineHeight: 1,
           cursor: 'pointer',
-          whiteSpace: 'nowrap',
         },
-      }, h(BrandLogo, { target, size: 14 }), meta.label)
-    }
-
-    /** The whole top-bar group: DeepSeek and Doubao side by side. */
-    function TopActions (props) {
-      return h('div', {
-        style: { display: 'inline-flex', alignItems: 'center', gap: 6, paddingRight: 6 },
-      },
-      h(TopAction, { t: props.t, ctx: props.ctx, target: 'deepseek' }),
-      h(TopAction, { t: props.t, ctx: props.ctx, target: 'doubao' }))
+      }, h(BrandLogo, { target, size: 16 }))
     }
 
     return {
@@ -253,13 +241,23 @@ window.__ModuleLoader__.load({
           locale: namespace,
         }, (props) => h(Panel, { ...props, t, ctx }))), 'web-companion: tab body')
 
-        // Top-bar group. `conversation.header.leading` is the frame's global navigation seat:
-        // root-scoped, so it exists on the new-conversation screen too, and it sits at the very
-        // top of the window next to the session title.
-        ctx.effect(() => ctx.slots.inject('conversation.header.leading', () => ctx.slots.register({
-          name: 'conversation.header.leading',
+        // Entries live in the composer's tool row at the bottom of the conversation, left of
+        // the model controls: compact, always next to the input the user is typing in.
+        ctx.effect(() => ctx.slots.inject('conversation.input.left', () => ctx.slots.register({
+          name: 'conversation.input.left',
+          id: 'web-companion-deepseek',
+          order: 10,
           locale: namespace,
-        }, (props) => h(TopActions, { ...props, t, ctx }))), 'web-companion: top actions')
+          label: () => t('entry.deepseek'),
+        }, (props) => h(ComposerAction, { ...props, t, ctx, target: 'deepseek' }))), 'web-companion: deepseek entry')
+
+        ctx.effect(() => ctx.slots.inject('conversation.input.left', () => ctx.slots.register({
+          name: 'conversation.input.left',
+          id: 'web-companion-doubao',
+          order: 11,
+          locale: namespace,
+          label: () => t('entry.doubao'),
+        }, (props) => h(ComposerAction, { ...props, t, ctx, target: 'doubao' }))), 'web-companion: doubao entry')
       },
     }
   },

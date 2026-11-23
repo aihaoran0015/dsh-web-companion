@@ -14,13 +14,13 @@ sign-in survives Harness restarts.
 
 > 中文说明见 [README.zh.md](README.zh.md).
 
-![Top-bar entries](docs/topbar.png)
+![Composer entries](docs/composer-entries.png)
 
 ## Features
 
-- **One-click web apps** — two entries in the window's top bar, before the session title (root-scoped,
-  so they exist even on the new-conversation screen): `DeepSeek` opens `chat.deepseek.com`, `Doubao` opens
-  `www.doubao.com/chat/`. No new window per call: one browser, reused.
+- **One-click web apps** — two icon entries in the composer tool row at the bottom of the
+  conversation: `DeepSeek` opens `chat.deepseek.com`, `Doubao` opens `www.doubao.com/chat/`.
+  No new window per call: one browser, reused.
 - **Vision through the Doubao web app** — `doubao_vision` pastes an image into the Doubao composer,
   sends it, and returns the reply text to the harness as a tool result.
 - **Persistent login** — the browser runs with a fixed `--user-data-dir`, so cookies and site
@@ -58,9 +58,10 @@ symlink are keyed by it. The repository itself is distributed under the name `ds
 
 ## Usage
 
-### Top-bar entries
+### Composer entries
 
-1. Top bar of the window, left of the session title: `DeepSeek` and `Doubao`. Each opens its page in the persistent browser.
+1. Bottom of the conversation, in the composer tool row (left of the model controls): two icon
+   buttons, `DeepSeek` and `Doubao`. Each opens its page in the persistent browser.
 2. The right sidebar's **Start** tab also carries a *Web companion* card that opens the panel.
 3. The panel's own buttons open the same browser; only if the host route is unavailable do they
    fall back to a Harness Browser tab (that partition is ephemeral — you would sign in again).
@@ -123,8 +124,8 @@ model ──doubao_vision──▶ paste image + prompt ▶ read reply bubble
 
 ## Verification
 
-1. **Entries** — both buttons appear in the window's top bar, including on the new-conversation
-   screen. Clicking one opens the matching page in the persistent browser.
+1. **Entries** — two icon buttons sit in the composer tool row. Clicking one opens the matching
+   page in the persistent browser.
 2. **Recognition** — attach an image and ask the model to read it with Doubao; the text comes back as a
    tool result.
 3. **Same session** — click `Doubao`, leave the page open, then run a recognition; the conversation
@@ -139,6 +140,8 @@ model ──doubao_vision──▶ paste image + prompt ▶ read reply bubble
 - **Captchas** may appear; the tool then times out and the browser window needs one manual action.
 - **Windows only** for now: browser auto-detection assumes Windows install paths.
 - **Web harness** has no Electron `<webview>`; pages open in the system browser instead.
+- **Placement** — the entries belong to the composer tool row, which exists once a Session is mounted,
+  so the new-conversation screen has no entries; the right sidebar's Start tab still carries the panel card.
 - Recognition polls the DOM and returns once the reply text is stable (~1.2 s), up to `replyTimeoutMs`.
 
 ## Development
@@ -146,7 +149,7 @@ model ──doubao_vision──▶ paste image + prompt ▶ read reply bubble
 | Path | Purpose |
 | --- | --- |
 | `index.js` | Host half: browser lifecycle, CDP client, tools, loopback route |
-| `client.js` | Client half: top-bar entries, right-sidebar panel, inlined logos |
+| `client.js` | Client half: composer entries, right-sidebar panel, inlined logos |
 | `cordis.patch.yml` | Loader row and default config |
 | `tools/fetch-logos.mjs` | Re-download the vendor favicon assets |
 | `tools/embed-logos.mjs` | Inline those assets into `client.js` as data URIs |
